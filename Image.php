@@ -16,7 +16,7 @@ class Image
 	public function resizeImage($pathToFile = '', $width = '', $height = '')
 	{
 		// Создаем новое изображение
-	   	if (is_file($pathToFile)) {
+	   	if (is_file($pathToFile) && !empty($width) && is_numeric($width)) {
 
 			// Создадим ресурс FileInfo
 			$finfo = new \finfo(FILEINFO_MIME_TYPE);
@@ -26,7 +26,6 @@ class Image
 
 			// Возвращает информацию о пути к файлу
 			$fileInfo = pathinfo($pathToFile);
-			//d($fileInfo); die();
 			
 			switch ($fileInfo['extension']) {
 				case 'jpeg':
