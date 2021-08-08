@@ -48,15 +48,3 @@ class Database
         ];
     }
 }
-
-$db2 = new Database('mysql', 'parsing', 'localhost', 'root', 'root');
-
-//$sql = 'INSERT INTO source SET name = :name';
-//$params = ['name' => 'test'];
-
-$sql = 'SELECT * FROM source';
-$params = [];
-
-$res = $db2->query($sql, $params);
-
-print_r($res);
