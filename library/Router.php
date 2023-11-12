@@ -1,27 +1,33 @@
 <?php
 namespace library;
 
+use LogicException;
+
 class Router 
 {
 	private $routes;
 	protected $registry;
 	
-	public function __construct($registry)
+	public function __construct($registry = '')
 	{
-	   	if (!is_dir($_SERVER['DOCUMENT_ROOT'] . '/setting')) {
-			   mkdir($_SERVER['DOCUMENT_ROOT'] . '/setting');
+	   	if ( !is_dir($_SERVER['DOCUMENT_ROOT'] . '/settings') ) 
+		{
+			   mkdir($_SERVER['DOCUMENT_ROOT'] . '/settings');
 		}
 
-		if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/setting/routes.php')) {
-			die('Файл с маршрутами в директории "Setting" не существует!');
+		if ( !file_exists($_SERVER['DOCUMENT_ROOT'] . '/settings/routes.php') ) 
+		{
+			$file = fopen($_SERVER['DOCUMENT_ROOT'] . '/settings/routes.php',"w");
+			fclose ($file);
+
+			//die('Файл с маршрутами в директории "Setting" не существует!');
 		}
 
-		$routerPatch = $_SERVER['DOCUMENT_ROOT'] . '/setting/routes.php';
+		$this->routes = require_once( $_SERVER['DOCUMENT_ROOT'] . '/settings/routes.php' );
 
-		if (empty($this->routes = require_once($routerPatch))) {
-			die ('В файле маршрутов нет маршрутов!');
-		}
-		
+		if ( empty( $this->routes ) )
+			die ('В файле маршрутов пуст!');
+
 		$this->registry = $registry;
 		
 	} // End: function __construct
@@ -58,8 +64,8 @@ class Router
 				$controller_method_getparam = explode( ':', array_pop($segments) );
 
 				// Получаем путь до Контроллера
-				$path_to_controller = '\controller';
-
+				$path_to_controller = 'app\controller';
+				
 				if ($segments)
 					$path_to_controller .= '\\'. implode( '\\', $segments);
 				
@@ -90,7 +96,7 @@ class Router
 			
 			if ($result != NULL) return false;
 
-		} else die('Такой контроллер не существует! Дружище не забудь здесь установить страницу 404');
+		} else die('Такой контроллер '.$controllerName.' не существует!');
 
 	} // End: function run
 	
